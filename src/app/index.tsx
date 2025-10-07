@@ -1,5 +1,6 @@
 import { Text, View } from 'react-native';
-import { Env } from '../lib/env';
+
+import { Env } from '@env';
 
 export default function Index() {
   return (

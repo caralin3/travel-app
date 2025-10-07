@@ -23,7 +23,8 @@
     "build:staging:android": "cross-env APP_ENV=staging EXPO_NO_DOTENV=1 eas build --profile staging --platform android ",
     "build:production:ios": "cross-env APP_ENV=production EXPO_NO_DOTENV=1 eas build --profile production --platform ios",
     "build:production:android": "cross-env APP_ENV=production EXPO_NO_DOTENV=1 eas build --profile production --platform android ",
-    "lint": "expo lint"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "type-check": "tsc  --noemit"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -63,7 +64,19 @@
     "dotenv": "^17.2.3",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
-    "typescript": "~5.9.2"
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react-compiler": "19.1.0-rc.2",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-tailwindcss": "^3.18.2",
+    "eslint-plugin-testing-library": "^7.12.0",
+    "eslint-plugin-unicorn": "^61.0.2",
+    "eslint-plugin-unused-imports": "^4.2.0",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.46.0"
   },
   "private": true,
   "packageManager": "pnpm@10.12.3+sha512.467df2c586056165580ad6dfb54ceaad94c5a30f80893ebdec5a44c5aa73c205ae4a5bb9d5ed6bb84ea7c249ece786642bbb49d06a307df218d03da41c317417"
