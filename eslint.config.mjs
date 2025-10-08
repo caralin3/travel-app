@@ -1,10 +1,10 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
 import expoConfig from 'eslint-config-expo/flat.js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import reactCompiler from 'eslint-plugin-react-compiler';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import tailwind from 'eslint-plugin-tailwindcss';
 import testingLibrary from 'eslint-plugin-testing-library';
+import { defineConfig, globalIgnores } from 'eslint/config';
 // eslint-disable-next-line import/no-named-as-default, import/no-named-as-default-member, import/namespace
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import unusedImports from 'eslint-plugin-unused-imports';
@@ -71,6 +71,49 @@ export default defineConfig([
       'import/prefer-default-export': 'off',
       'import/no-cycle': ['error', { maxDepth: '∞' }],
       'prettier/prettier': ['error', { ignores: ['expo-env.d.ts'] }],
+      'import/order': [
+        'error',
+        {
+          groups: [
+            ['external', 'builtin'],
+            'internal',
+            ['sibling', 'parent'],
+            'index',
+          ],
+          pathGroups: [
+            {
+              pattern: '@(react|react-native)',
+              group: 'external',
+              position: 'before',
+            },
+            {
+              pattern: '^[a-zA-Z]',
+              group: 'internal',
+            },
+            {
+              pattern: '^@/?\\w',
+              group: 'internal',
+            },
+            {
+              pattern: '^[./]',
+              group: 'internal',
+            },
+          ],
+          pathGroupsExcludedImportTypes: ['internal', 'react'],
+          'newlines-between': 'always',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+        },
+      ],
+      settings: {
+        'import/resolver': {
+          typescript: {
+            project: './tsconfig.json',
+          },
+        },
+      },
     },
   },
   {
