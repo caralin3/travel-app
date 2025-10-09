@@ -1,6 +1,6 @@
 import React from 'react';
 import type { TextProps, TextStyle } from 'react-native';
-import { StyleSheet, Text as NNText } from 'react-native';
+import { Text as NNText, StyleSheet } from 'react-native';
 import { twMerge } from 'tailwind-merge';
 
 interface Props extends TextProps {
@@ -25,13 +25,7 @@ export const Text = ({
   );
 
   const nStyle = React.useMemo(
-    () =>
-      StyleSheet.flatten([
-        {
-          writingDirection: 'rtl',
-        },
-        style,
-      ]) as TextStyle,
+    () => StyleSheet.flatten([style]) as TextStyle,
     [style]
   );
   return (

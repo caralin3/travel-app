@@ -5,6 +5,25 @@ import React from 'react';
 import { Platform } from 'react-native';
 
 export default function TabLayout() {
+  // const status = useAuth.use.status();
+  // const [isFirstTime] = useIsFirstTime();
+  // const hideSplash = useCallback(async () => {
+  //   await SplashScreen.hideAsync();
+  // }, []);
+  // useEffect(() => {
+  //   if (status !== 'idle') {
+  //     setTimeout(() => {
+  //       hideSplash();
+  //     }, 1000);
+  //   }
+  // }, [hideSplash, status]);
+
+  // if (isFirstTime) {
+  //   return <Redirect href="/onboarding" />;
+  // }
+  // if (status === 'signOut') {
+  //   return <Redirect href="/login" />;
+  // }
   return (
     <Tabs
       screenOptions={{
