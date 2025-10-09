@@ -5,12 +5,11 @@ import { ItemsContainer } from '@/components/settings/items-container';
 import { ThemeItem } from '@/components/settings/theme-item';
 import { FocusAwareStatusBar, ScrollView, Text, View } from '@/components/ui';
 import { useAuth } from '@/lib';
+import { useRouter } from 'expo-router';
 
 export default function Settings() {
+  const router = useRouter();
   const signOut = useAuth.use.signOut();
-  // const { colorScheme } = useColorScheme();
-  // const iconColor =
-  //   colorScheme === 'dark' ? colors.neutral[400] : colors.neutral[500];
 
   return (
     <>
@@ -31,6 +30,7 @@ export default function Settings() {
           <ItemsContainer title="Links">
             <Item text="Privacy" onPress={() => {}} />
             <Item text="Terms" onPress={() => {}} />
+            <Item text="Style" onPress={() => router.navigate('/style')} />
           </ItemsContainer>
 
           <View className="my-8">

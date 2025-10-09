@@ -13,7 +13,7 @@ type IconMapping = Record<
   SymbolViewProps['name'],
   ComponentProps<typeof MaterialIcons>['name']
 >;
-type IconSymbolName = keyof typeof MAPPING;
+export type IconSymbolName = keyof typeof MAPPING;
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
@@ -29,6 +29,7 @@ const MAPPING = {
   map: 'map',
   dollarsign: 'attach-money',
   'paperplane.fill': 'send',
+  plus: 'add',
 } as IconMapping;
 
 /**

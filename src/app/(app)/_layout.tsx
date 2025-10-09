@@ -93,6 +93,13 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="style"
+        options={{
+          href: null,
+          title: 'Style',
+        }}
+      />
     </Tabs>
   );
 }
