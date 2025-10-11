@@ -13,6 +13,7 @@ import { LodgingForm } from './lodging-form';
 import { OtherForm } from './other-form';
 import { ShoppingForm } from './shopping-form';
 import { TransportForm } from './transport-form';
+import { TripForm } from './trip-form';
 
 interface FloatingAddPlanMenuProps {}
 
@@ -40,6 +41,17 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
       title: 'Add a Plan',
       headerAction: modal.dismiss,
       component: <AddPlanMenu onSelect={handleChoosePlan} />,
+    },
+    trip: {
+      title: 'Trip',
+      headerAction: () => setCurrentForm('add-plan'),
+      component: (
+        <TripForm
+          onSubmit={() => {
+            dismissForm();
+          }}
+        />
+      ),
     },
     flight: {
       title: 'Flight',
@@ -139,7 +151,7 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
         title={currentView[currentForm].title}
         onLeftActionPress={currentView[currentForm].headerAction}
         dismissible={currentForm === 'add-plan'}
-        snapPoints={currentForm === 'add-plan' ? ['70%'] : ['95%']}
+        snapPoints={['70%', '95%']}
       >
         <BottomSheetKeyboardAwareScrollView
           contentContainerStyle={{

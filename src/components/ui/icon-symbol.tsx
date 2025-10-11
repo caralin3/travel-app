@@ -35,6 +35,7 @@ const MAPPING = {
   'figure.walk': 'directions-walk',
   'fork.knife': 'restaurant',
   gearshape: 'settings',
+  suitcase: 'luggage',
   map: 'map',
   'music.note': 'music-note',
   'paperplane.fill': 'send',

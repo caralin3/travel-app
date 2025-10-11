@@ -12,6 +12,14 @@ export interface AddPlanMenuProps {
 export const AddPlanMenu = ({ onSelect }: AddPlanMenuProps) => {
   return (
     <>
+      <Text className="text-[16px] font-bold">Add Trip</Text>
+      <Pressable
+        className="flex-row gap-4 items-center p-4 border border-primary-500 dark:border-neutral-400 rounded-xl"
+        onPress={() => onSelect({ label: 'Trip', value: 'trip' })}
+      >
+        <IconSymbol name="suitcase" size={24} color={colors.primary[500]} />
+        <Text>Trip</Text>
+      </Pressable>
       <Text className="text-[16px] font-bold">Add Event</Text>
       {events.map((event) => (
         <Pressable
