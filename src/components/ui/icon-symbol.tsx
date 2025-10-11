@@ -25,6 +25,7 @@ const MAPPING = {
   'bag.fill': 'shopping-bag',
   calendar: 'calendar-today',
   'car.fill': 'directions-car',
+  checklist: 'checklist',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.left': 'chevron-left',
   'chevron.right': 'chevron-right',
