@@ -21,12 +21,19 @@ export type IconSymbolName = keyof typeof MAPPING;
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
 const MAPPING = {
+  airplane: 'flight',
+  'bag.fill': 'shopping-bag',
   calendar: 'calendar-today',
+  'car.fill': 'directions-car',
   'chevron.left.forwardslash.chevron.right': 'code',
+  'chevron.left': 'chevron-left',
   'chevron.right': 'chevron-right',
   'house.fill': 'home',
+  'figure.walk': 'directions-walk',
+  'fork.knife': 'restaurant',
   gearshape: 'settings',
   map: 'map',
+  'music.note': 'music-note',
   dollarsign: 'attach-money',
   'paperplane.fill': 'send',
   plus: 'add',

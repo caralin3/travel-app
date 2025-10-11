@@ -31,24 +31,34 @@
 import type {
   BottomSheetBackdropProps,
   BottomSheetModalProps,
+  SNAP_POINT_TYPE,
 } from '@gorhom/bottom-sheet';
 import { BottomSheetModal, useBottomSheet } from '@gorhom/bottom-sheet';
 import * as React from 'react';
-import { Pressable, View } from 'react-native';
+import { Platform, Pressable, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Path, Svg } from 'react-native-svg';
 
+import { useBottomSheetBackHandler } from '@/lib/hooks';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { IconButton } from './icon-button';
 import { Text } from './text';
 
 type ModalProps = BottomSheetModalProps & {
+  dismissible?: boolean;
+  onLeftActionPress?: () => void;
+  showCloseButton?: boolean;
   title?: string;
 };
 
 type ModalRef = React.ForwardedRef<BottomSheetModal>;
 
 type ModalHeaderProps = {
-  title?: string;
   dismiss: () => void;
+  dismissible?: boolean;
+  onLeftActionPress?: () => void;
+  showCloseButton?: boolean;
+  title?: string;
 };
 
 export const useModal = () => {
@@ -78,6 +88,9 @@ export const Modal = React.forwardRef(
     );
     const modal = useModal();
     const snapPoints = React.useMemo(() => _snapPoints, [_snapPoints]);
+    const insets = useSafeAreaInsets();
+
+    const { handleSheetPositionChange } = useBottomSheetBackHandler(modal.ref);
 
     React.useImperativeHandle(
       ref,
@@ -87,12 +100,33 @@ export const Modal = React.forwardRef(
     const renderHandleComponent = React.useCallback(
       () => (
         <>
-          <View className="mb-8 mt-2 h-1 w-12 self-center rounded-lg bg-gray-400 dark:bg-gray-700" />
-          <ModalHeader title={title} dismiss={modal.dismiss} />
+          {props.dismissible && (
+            <View
+              className={`${!title ? 'mb-8' : ''} mt-2 h-1 w-12 self-center rounded-lg bg-gray-400 dark:bg-gray-700`}
+            />
+          )}
+          <ModalHeader
+            title={title}
+            onLeftActionPress={props.onLeftActionPress}
+            dismiss={modal.dismiss}
+            dismissible={props.dismissible}
+            showCloseButton={props.showCloseButton}
+          />
         </>
       ),
-      [title, modal.dismiss]
+      [title, modal.dismiss, props.dismissible, props.showCloseButton]
     );
+
+    // @TODO: Fix
+    const handleChange = (
+      index: number,
+      position: number,
+      type: SNAP_POINT_TYPE
+    ) => {
+      if (props.dismissible) {
+        handleSheetPositionChange(index, position, type);
+      }
+    };
 
     return (
       <BottomSheetModal
@@ -103,7 +137,10 @@ export const Modal = React.forwardRef(
         snapPoints={snapPoints}
         backdropComponent={props.backdropComponent || renderBackdrop}
         enableDynamicSizing={false}
+        enablePanDownToClose={props.dismissible}
         handleComponent={renderHandleComponent}
+        bottomInset={insets.bottom}
+        // onChange={handleChange}
       />
     );
   }
@@ -119,7 +156,7 @@ const CustomBackdrop = ({ style }: BottomSheetBackdropProps) => {
   const { close } = useBottomSheet();
   return (
     <AnimatedPressable
-      onPress={() => close()}
+      // onPress={() => close()}
       entering={FadeIn.duration(50)}
       exiting={FadeOut.duration(20)}
       style={[style, { backgroundColor: 'rgba(0, 0, 0, 0.4)' }]}
@@ -155,23 +192,43 @@ const getDetachedProps = (detached: boolean) => {
  * ModalHeader
  */
 
-const ModalHeader = React.memo(({ title, dismiss }: ModalHeaderProps) => {
-  return (
-    <>
-      {title && (
-        <View className="flex-row px-2 py-4">
-          <View className="size-[24px]" />
-          <View className="flex-1">
-            <Text className="text-center text-[16px] font-bold text-[#26313D] dark:text-white">
-              {title}
-            </Text>
+const ModalHeader = React.memo(
+  ({
+    dismiss,
+    dismissible = true,
+    onLeftActionPress,
+    showCloseButton = true,
+    title,
+  }: ModalHeaderProps) => {
+    return (
+      <>
+        {!!title && (
+          <View
+            className={`flex-row ${Platform.select({
+              ios: 'p-6 pb-4',
+              android: 'px-3 pt-6 pb-0',
+            })}`}
+          >
+            <View className="flex-1 flex-row items-center justify-between">
+              {!!onLeftActionPress && (
+                <IconButton
+                  icon="chevron.left"
+                  size={Platform.select({ ios: 28, android: 40 })}
+                  onPress={onLeftActionPress}
+                />
+              )}
+              <Text className="text-center text-[20px] font-bold text-[#26313D] dark:text-white">
+                {title}
+              </Text>
+              <View className="size-[24px]" />
+            </View>
           </View>
-        </View>
-      )}
-      <CloseButton close={dismiss} />
-    </>
-  );
-});
+        )}
+        {showCloseButton && dismissible && <CloseButton close={dismiss} />}
+      </>
+    );
+  }
+);
 
 const CloseButton = ({ close }: { close: () => void }) => {
   return (
