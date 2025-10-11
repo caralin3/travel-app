@@ -4,7 +4,15 @@ import { useModal } from '../ui';
 import { FloatingActionButton } from '../ui/floating-action-button';
 import { ModalForm } from '../ui/modal-form';
 import BottomSheetKeyboardAwareScrollView from '../ui/modal-keyboard-aware-scroll-view';
+import { ActivityForm } from './activity-form';
 import { AddPlanMenu } from './add-plan-menu';
+import { EntertainmentForm } from './entertainment-form';
+import { FlightForm } from './flight-form';
+import { FoodForm } from './food-form';
+import { LodgingForm } from './lodging-form';
+import { OtherForm } from './other-form';
+import { ShoppingForm } from './shopping-form';
+import { TransportForm } from './transport-form';
 
 interface FloatingAddPlanMenuProps {}
 
@@ -14,6 +22,11 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
 
   const handleChoosePlan = ({ value }: { value: EventId }) => {
     setCurrentForm(value);
+  };
+
+  const dismissForm = () => {
+    modal.dismiss();
+    setCurrentForm('add-plan');
   };
 
   const currentView: {
@@ -31,42 +44,90 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
     flight: {
       title: 'Flight',
       headerAction: () => setCurrentForm('add-plan'),
-      component: <></>,
+      component: (
+        <FlightForm
+          onSubmit={() => {
+            dismissForm();
+          }}
+        />
+      ),
     },
     lodging: {
       title: 'Lodging',
       headerAction: () => setCurrentForm('add-plan'),
-      component: <></>,
+      component: (
+        <LodgingForm
+          onSubmit={() => {
+            dismissForm();
+          }}
+        />
+      ),
     },
     transport: {
       title: 'Transport',
       headerAction: () => setCurrentForm('add-plan'),
-      component: <></>,
+      component: (
+        <TransportForm
+          onSubmit={() => {
+            dismissForm();
+          }}
+        />
+      ),
     },
     food: {
       title: 'Food',
       headerAction: () => setCurrentForm('add-plan'),
-      component: <></>,
+      component: (
+        <FoodForm
+          onSubmit={() => {
+            dismissForm();
+          }}
+        />
+      ),
     },
     entertainment: {
       title: 'Entertainment',
       headerAction: () => setCurrentForm('add-plan'),
-      component: <></>,
+      component: (
+        <EntertainmentForm
+          onSubmit={() => {
+            dismissForm();
+          }}
+        />
+      ),
     },
     shopping: {
       title: 'Shopping',
       headerAction: () => setCurrentForm('add-plan'),
-      component: <></>,
+      component: (
+        <ShoppingForm
+          onSubmit={() => {
+            dismissForm();
+          }}
+        />
+      ),
     },
     activity: {
       title: 'Activity',
       headerAction: () => setCurrentForm('add-plan'),
-      component: <></>,
+      component: (
+        <ActivityForm
+          onSubmit={() => {
+            dismissForm();
+          }}
+        />
+      ),
     },
     other: {
       title: 'Other',
       headerAction: () => setCurrentForm('add-plan'),
-      component: <></>,
+      component: (
+        <OtherForm
+          onSubmit={() => {
+            dismissForm();
+          }}
+        />
+      ),
     },
   };
 
