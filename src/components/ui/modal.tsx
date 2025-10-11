@@ -78,6 +78,7 @@ export const Modal = React.forwardRef(
       snapPoints: _snapPoints = ['60%'],
       title,
       detached = false,
+      dismissible = true,
       ...props
     }: ModalProps,
     ref: ModalRef
@@ -100,7 +101,7 @@ export const Modal = React.forwardRef(
     const renderHandleComponent = React.useCallback(
       () => (
         <>
-          {props.dismissible && (
+          {dismissible && (
             <View
               className={`${!title ? 'mb-8' : ''} mt-2 h-1 w-12 self-center rounded-lg bg-gray-400 dark:bg-gray-700`}
             />
@@ -109,12 +110,12 @@ export const Modal = React.forwardRef(
             title={title}
             onLeftActionPress={props.onLeftActionPress}
             dismiss={modal.dismiss}
-            dismissible={props.dismissible}
+            dismissible={dismissible}
             showCloseButton={props.showCloseButton}
           />
         </>
       ),
-      [title, modal.dismiss, props.dismissible, props.showCloseButton]
+      [title, modal.dismiss, dismissible, props.showCloseButton]
     );
 
     // @TODO: Fix
@@ -123,7 +124,7 @@ export const Modal = React.forwardRef(
       position: number,
       type: SNAP_POINT_TYPE
     ) => {
-      if (props.dismissible) {
+      if (dismissible) {
         handleSheetPositionChange(index, position, type);
       }
     };
@@ -137,7 +138,7 @@ export const Modal = React.forwardRef(
         snapPoints={snapPoints}
         backdropComponent={props.backdropComponent || renderBackdrop}
         enableDynamicSizing={false}
-        enablePanDownToClose={props.dismissible}
+        enablePanDownToClose={dismissible}
         handleComponent={renderHandleComponent}
         bottomInset={insets.bottom}
         // onChange={handleChange}
@@ -210,12 +211,14 @@ const ModalHeader = React.memo(
             })}`}
           >
             <View className="flex-1 flex-row items-center justify-between">
-              {!!onLeftActionPress && (
+              {onLeftActionPress ? (
                 <IconButton
                   icon="chevron.left"
                   size={Platform.select({ ios: 28, android: 40 })}
                   onPress={onLeftActionPress}
                 />
+              ) : (
+                <View className="size-[24px]" />
               )}
               <Text className="text-center text-[20px] font-bold text-[#26313D] dark:text-white">
                 {title}

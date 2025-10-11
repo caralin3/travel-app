@@ -9,11 +9,21 @@ interface ModalFormProps {
   children: React.ReactNode;
   dismissible?: boolean;
   onLeftActionPress?: () => void;
+  snapPoints?: string[];
   title?: string;
 }
 
 export const ModalForm = forwardRef<BottomSheetModal, ModalFormProps>(
-  ({ children, dismissible = true, onLeftActionPress, title }, ref) => {
+  (
+    {
+      children,
+      dismissible = true,
+      onLeftActionPress,
+      title,
+      snapPoints = ['70%'],
+    },
+    ref
+  ) => {
     const { colorScheme } = useColorScheme();
     const isDark = colorScheme === 'dark';
 
@@ -21,7 +31,7 @@ export const ModalForm = forwardRef<BottomSheetModal, ModalFormProps>(
       <Modal
         ref={ref}
         index={0}
-        snapPoints={['70%']}
+        snapPoints={snapPoints}
         backgroundStyle={{
           backgroundColor: isDark ? colors.neutral[800] : colors.white,
         }}

@@ -21,17 +21,17 @@ import { Text } from './text';
 
 const selectTv = tv({
   slots: {
-    container: 'mb-4',
+    container: 'flex-1 mb-4',
     label: 'text-grey-100 mb-1 text-lg dark:text-neutral-100',
     input:
-      'border-grey-50 mt-0 flex-row items-center justify-center rounded-xl border-[0.5px] p-3  dark:border-neutral-500 dark:bg-neutral-800',
+      'mt-0 flex-row items-center justify-center rounded-xl border-[0.5px] p-3  border-neutral-300 dark:border-neutral-700',
     inputValue: 'dark:text-neutral-100',
   },
 
   variants: {
     focused: {
       true: {
-        input: 'border-neutral-600',
+        input: 'border-neutral-300 dark:border-neutral-700',
       },
     },
     error: {
@@ -43,7 +43,7 @@ const selectTv = tv({
     },
     disabled: {
       true: {
-        input: 'bg-neutral-200',
+        input: 'bg-neutral-100 dark:bg-neutral-700 opacity-50',
       },
     },
   },
@@ -60,8 +60,9 @@ export type OptionType = { label: string; value: string | number };
 type OptionsProps = {
   options: OptionType[];
   onSelect: (option: OptionType) => void;
-  value?: string | number;
   testID?: string;
+  title?: string;
+  value?: string | number;
 };
 
 function keyExtractor(item: OptionType) {
@@ -69,8 +70,9 @@ function keyExtractor(item: OptionType) {
 }
 
 export const Options = React.forwardRef<BottomSheetModal, OptionsProps>(
-  ({ options, onSelect, value, testID }, ref) => {
-    const height = options.length * 70 + 100;
+  ({ options, onSelect, value, testID, title }, ref) => {
+    const maxHeight = 400;
+    const height = Math.min(options.length * 70 + 100, maxHeight);
     const snapPoints = React.useMemo(() => [height], [height]);
     const { colorScheme } = useColorScheme();
     const isDark = colorScheme === 'dark';
@@ -96,6 +98,7 @@ export const Options = React.forwardRef<BottomSheetModal, OptionsProps>(
         backgroundStyle={{
           backgroundColor: isDark ? colors.neutral[800] : colors.white,
         }}
+        title={title}
       >
         <List
           data={options}
@@ -131,13 +134,17 @@ const Option = React.memo(
 );
 
 export interface SelectProps {
+  keyValue?: 'label' | 'value';
   value?: string | number;
   label?: string;
   disabled?: boolean;
   error?: string;
+  helpText?: string;
   options?: OptionType[];
+  optionsTitle?: string;
   onSelect?: (value: string | number) => void;
   placeholder?: string;
+  required?: boolean;
   testID?: string;
 }
 interface ControlledSelectProps<T extends FieldValues>
@@ -146,14 +153,18 @@ interface ControlledSelectProps<T extends FieldValues>
 
 export const Select = (props: SelectProps) => {
   const {
+    keyValue = 'label',
     label,
     value,
     error,
-    options = [],
-    placeholder = 'select...',
+    placeholder = 'Select...',
+    helpText,
     disabled = false,
     onSelect,
+    options = [],
+    optionsTitle,
     testID,
+    required = false,
   } = props;
   const modal = useModal();
 
@@ -174,13 +185,10 @@ export const Select = (props: SelectProps) => {
     [error, disabled]
   );
 
-  const textValue = React.useMemo(
-    () =>
-      value !== undefined
-        ? (options?.filter((t) => t.value === value)?.[0]?.label ?? placeholder)
-        : placeholder,
-    [value, options, placeholder]
-  );
+  const textValue = React.useMemo(() => {
+    const selectedOption = options?.find((t) => t.value === value);
+    return selectedOption ? selectedOption[keyValue] : placeholder;
+  }, [value, options, placeholder, keyValue]);
 
   return (
     <>
@@ -191,6 +199,11 @@ export const Select = (props: SelectProps) => {
             className={styles.label()}
           >
             {label}
+            {required && (
+              <Text className="text-danger-600 dark:text-danger-600 text-[16px]">
+                *
+              </Text>
+            )}
           </Text>
         )}
         <Pressable
@@ -204,13 +217,19 @@ export const Select = (props: SelectProps) => {
           </View>
           <CaretDown />
         </Pressable>
-        {error && (
+        {error ? (
           <Text
             testID={`${testID}-error`}
-            className="text-sm text-danger-300 dark:text-danger-600"
+            className="text-sm text-danger-300 dark:text-danger-600 mt-1"
           >
             {error}
           </Text>
+        ) : (
+          !!helpText && (
+            <Text className="text-neutral-500 dark:text-neutral-400 text-sm mt-1">
+              {helpText}
+            </Text>
+          )
         )}
       </View>
       <Options
@@ -218,6 +237,7 @@ export const Select = (props: SelectProps) => {
         ref={modal.ref}
         options={options}
         onSelect={onSelectOption}
+        title={optionsTitle}
       />
     </>
   );

@@ -1,4 +1,4 @@
-import { EventId } from '@/lib/types';
+import { EventTypeEnum } from '@/lib/types/plans';
 import { useState } from 'react';
 import { useModal } from '../ui';
 import { FloatingActionButton } from '../ui/floating-action-button';
@@ -18,9 +18,9 @@ interface FloatingAddPlanMenuProps {}
 
 export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
   const modal = useModal();
-  const [currentForm, setCurrentForm] = useState<EventId>('add-plan');
+  const [currentForm, setCurrentForm] = useState<EventTypeEnum>('add-plan');
 
-  const handleChoosePlan = ({ value }: { value: EventId }) => {
+  const handleChoosePlan = ({ value }: { value: EventTypeEnum }) => {
     setCurrentForm(value);
   };
 
@@ -139,10 +139,11 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
         title={currentView[currentForm].title}
         onLeftActionPress={currentView[currentForm].headerAction}
         dismissible={currentForm === 'add-plan'}
+        snapPoints={currentForm === 'add-plan' ? ['70%'] : ['95%']}
       >
         <BottomSheetKeyboardAwareScrollView
           contentContainerStyle={{
-            gap: 16,
+            gap: currentForm === 'add-plan' ? 16 : 8,
           }}
           showsHorizontalScrollIndicator={false}
         >
