@@ -30,7 +30,10 @@ export default function Settings() {
           <ItemsContainer title="Links">
             <Item text="Privacy" onPress={() => {}} />
             <Item text="Terms" onPress={() => {}} />
-            <Item text="Style" onPress={() => router.navigate('/style')} />
+            <Item
+              text="Style"
+              onPress={() => router.navigate('/(app)/home/style')}
+            />
           </ItemsContainer>
 
           <View className="my-8">

@@ -49,8 +49,9 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
+          headerShown: false,
           title: 'Home',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="house.fill" color={color} />
@@ -80,7 +81,7 @@ export default function TabLayout() {
         options={{
           title: 'Expenses',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name="dollarsign" color={color} />
+            <IconSymbol size={24} name="creditcard" color={color} />
           ),
         }}
       />
@@ -91,22 +92,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <IconSymbol size={24} name="checklist" color={color} />
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'Settings',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name="gearshape" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="style"
-        options={{
-          href: null,
-          title: 'Style',
         }}
       />
     </Tabs>
