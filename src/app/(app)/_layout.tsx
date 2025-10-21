@@ -49,7 +49,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="(home)"
         options={{
           headerShown: false,
           title: 'Home',

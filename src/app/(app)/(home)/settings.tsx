@@ -32,7 +32,7 @@ export default function Settings() {
             <Item text="Terms" onPress={() => {}} />
             <Item
               text="Style"
-              onPress={() => router.navigate('/(app)/home/style')}
+              onPress={() => router.navigate('/(app)/(home)/style')}
             />
           </ItemsContainer>
 
