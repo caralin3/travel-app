@@ -83,6 +83,11 @@ const client = z.object({
   API_URL: z.string(),
   VAR_NUMBER: z.number(),
   VAR_BOOL: z.boolean(),
+
+  FIREBASE_API_KEY: z.string(),
+  FIREBASE_ANDROID_APP_ID: z.string(),
+  FIREBASE_IOS_APP_ID: z.string(),
+  FIREBASE_PROJECT_ID: z.string(),
 });
 
 const buildTime = z.object({
@@ -108,6 +113,10 @@ const _clientEnv = {
   API_URL: process.env.API_URL,
   VAR_NUMBER: Number(process.env.VAR_NUMBER),
   VAR_BOOL: process.env.VAR_BOOL === 'true',
+  FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
+  FIREBASE_ANDROID_APP_ID: process.env.FIREBASE_ANDROID_APP_ID,
+  FIREBASE_IOS_APP_ID: process.env.FIREBASE_IOS_APP_ID,
+  FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
 };
 
 /**

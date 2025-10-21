@@ -1,11 +1,11 @@
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { useAuth } from '@/lib';
+import { Redirect, Tabs } from 'expo-router';
 import { Platform } from 'react-native';
 
 export default function TabLayout() {
-  // const status = useAuth.use.status();
+  const status = useAuth.use.status();
   // const [isFirstTime] = useIsFirstTime();
   // const hideSplash = useCallback(async () => {
   //   await SplashScreen.hideAsync();
@@ -21,9 +21,10 @@ export default function TabLayout() {
   // if (isFirstTime) {
   //   return <Redirect href="/onboarding" />;
   // }
-  // if (status === 'signOut') {
-  //   return <Redirect href="/login" />;
-  // }
+  if (status === 'signOut') {
+    return <Redirect href="/login" />;
+  }
+
   return (
     <Tabs
       screenOptions={{

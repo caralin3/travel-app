@@ -9,18 +9,31 @@ import { Env } from '@/lib/env';
 import { useRouter } from 'expo-router';
 import { Button, ControlledInput, Text, View } from './ui';
 
-const schema = z.object({
-  email: z.email('Invalid email format'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
+const schema = z
+  .object({
+    email: z.email('Invalid email format'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z
+      .string()
+      .min(6, 'Password must be at least 6 characters'),
+  })
+  .superRefine(({ password, confirmPassword }, ctx) => {
+    if (password !== confirmPassword) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Passwords do not match',
+        path: ['confirmPassword'],
+      });
+    }
+  });
 
 export type FormType = z.infer<typeof schema>;
 
-export type LoginFormProps = {
+export type RegisterFormProps = {
   onSubmit?: SubmitHandler<FormType>;
 };
 
-export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
+export const RegisterForm = ({ onSubmit = () => {} }: RegisterFormProps) => {
   const router = useRouter();
 
   const { handleSubmit, control, formState } = useForm<FormType>({
@@ -42,7 +55,7 @@ export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
             testID="form-title"
             className="pb-6 text-center text-4xl font-bold"
           >
-            Sign In
+            Register
           </Text>
         </View>
 
@@ -66,20 +79,30 @@ export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
           required
           error={formState.errors.password?.message}
         />
+        <ControlledInput
+          containerStyles="mb-4"
+          testID="confirm-password-input"
+          control={control}
+          name="confirmPassword"
+          label="Confirm Password"
+          secureTextEntry={true}
+          required
+          error={formState.errors.confirmPassword?.message}
+        />
         <Button
-          testID="login-button"
-          label="Login"
+          testID="register-button"
+          label="Register"
           onPress={handleSubmit(onSubmit)}
           variant="secondary"
         />
         <View className="items-center justify-center">
           <Text className="flex flex-row items-start text-center text-gray-500">
-            Already have an account?
+            Need an account?
           </Text>
           <Button
-            label="Register"
+            label="Login"
             variant="ghost"
-            onPress={() => router.navigate('/register')}
+            onPress={() => router.navigate('/login')}
           />
         </View>
       </View>

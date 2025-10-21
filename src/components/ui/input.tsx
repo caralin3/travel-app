@@ -20,7 +20,6 @@ const inputTv = tv({
     input:
       'mt-0 rounded-xl border-[0.5px] border-neutral-300 px-4 py-3 font-inter text-base  font-medium leading-5 dark:border-neutral-700 dark:text-white',
   },
-
   variants: {
     focused: {
       true: {
@@ -47,6 +46,7 @@ const inputTv = tv({
 });
 
 export interface NInputProps extends TextInputProps {
+  containerStyles?: string;
   disabled?: boolean;
   error?: string;
   helpText?: string;
@@ -74,6 +74,7 @@ interface ControlledInputProps<T extends FieldValues>
 
 export const Input = React.forwardRef<NTextInput, NInputProps>((props, ref) => {
   const {
+    containerStyles,
     label,
     error,
     helpText,
@@ -96,7 +97,7 @@ export const Input = React.forwardRef<NTextInput, NInputProps>((props, ref) => {
   );
 
   return (
-    <View className={styles.container()}>
+    <View className={containerStyles ?? styles.container()}>
       {label && (
         <Text
           testID={testID ? `${testID}-label` : undefined}
