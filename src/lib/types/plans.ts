@@ -67,6 +67,12 @@ export const Flight = z.object({
 
 export type Flight = z.infer<typeof Flight>;
 
+export const NewFlight = z.discriminatedUnion('type', [
+  Flight.omit({ id: true }),
+]);
+
+export type NewFlight = z.infer<typeof NewFlight>;
+
 export const Lodging = z.object({
   address: Address.optional(),
   checkInDatetime: z.string().optional(),
@@ -83,6 +89,12 @@ export const Lodging = z.object({
 });
 
 export type Lodging = z.infer<typeof Lodging>;
+
+export const NewLodging = z.discriminatedUnion('type', [
+  Lodging.omit({ id: true }),
+]);
+
+export type NewLodging = z.infer<typeof NewLodging>;
 
 export const Transport = z.object({
   confirmationNumber: z.string().optional(),
@@ -101,6 +113,12 @@ export const Transport = z.object({
 
 export type Transport = z.infer<typeof Transport>;
 
+export const NewTransport = z.discriminatedUnion('type', [
+  Transport.omit({ id: true }),
+]);
+
+export type NewTransport = z.infer<typeof NewTransport>;
+
 export const Food = z.object({
   address: Address.optional(),
   createdAt: z.string(),
@@ -115,6 +133,10 @@ export const Food = z.object({
 });
 
 export type Food = z.infer<typeof Food>;
+
+export const NewFood = z.discriminatedUnion('type', [Food.omit({ id: true })]);
+
+export type NewFood = z.infer<typeof NewFood>;
 
 export const Entertainment = z.object({
   address: Address.optional(),
@@ -131,6 +153,12 @@ export const Entertainment = z.object({
 
 export type Entertainment = z.infer<typeof Entertainment>;
 
+export const NewEntertainment = z.discriminatedUnion('type', [
+  Entertainment.omit({ id: true }),
+]);
+
+export type NewEntertainment = z.infer<typeof NewEntertainment>;
+
 export const Shopping = z.object({
   address: Address.optional(),
   createdAt: z.string(),
@@ -145,6 +173,12 @@ export const Shopping = z.object({
 });
 
 export type Shopping = z.infer<typeof Shopping>;
+
+export const NewShopping = z.discriminatedUnion('type', [
+  Shopping.omit({ id: true }),
+]);
+
+export type NewShopping = z.infer<typeof NewShopping>;
 
 export const Activity = z.object({
   address: Address.optional(),
@@ -161,6 +195,12 @@ export const Activity = z.object({
 
 export type Activity = z.infer<typeof Activity>;
 
+export const NewActivity = z.discriminatedUnion('type', [
+  Activity.omit({ id: true }),
+]);
+
+export type NewActivity = z.infer<typeof NewActivity>;
+
 export const Other = z.object({
   address: Address.optional(),
   createdAt: z.string(),
@@ -175,6 +215,10 @@ export const Other = z.object({
 });
 
 export type Other = z.infer<typeof Other>;
+
+export const NewOther = z.discriminatedUnion('type', [
+  Other.omit({ id: true }),
+]);
 
 export const Plan = z.discriminatedUnion('type', [
   Flight,
