@@ -46,24 +46,23 @@ export default function RootLayout() {
     </Providers>
   );
 }
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      gcTime: Infinity, // Keep data in cache forever
+      // staleTime: Infinity, // Optional: if you never want to refetch data automatically
+    },
+  },
+});
+
+const asyncPersist = createAsyncStoragePersister({
+  storage: AsyncStorage,
+  throttleTime: 3000,
+});
 
 function Providers({ children }: { children: React.ReactNode }) {
   const theme = useThemeConfig();
   const router = useRouter();
-
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        gcTime: Infinity, // Keep data in cache forever
-        // staleTime: Infinity, // Optional: if you never want to refetch data automatically
-      },
-    },
-  });
-
-  const asyncPersist = createAsyncStoragePersister({
-    storage: AsyncStorage,
-    throttleTime: 3000,
-  });
 
   useEffect(() => {
     return NetInfo.addEventListener((state) => {
@@ -107,28 +106,28 @@ function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <GestureHandlerRootView
-      style={styles.container}
-      className={theme.dark ? `dark` : undefined}
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: asyncPersist, maxAge: Infinity }}
+      // onSuccess will be called when the initial restore is finished
+      // resumePausedMutations will trigger any paused mutations
+      // that was initially triggered when the device was offline
+      onSuccess={() => queryClient.resumePausedMutations()}
     >
-      <KeyboardProvider>
-        <ThemeProvider value={theme}>
-          <BottomSheetModalProvider>
-            <PersistQueryClientProvider
-              client={queryClient}
-              persistOptions={{ persister: asyncPersist, maxAge: Infinity }}
-              // onSuccess will be called when the initial restore is finished
-              // resumePausedMutations will trigger any paused mutations
-              // that was initially triggered when the device was offline
-              onSuccess={() => queryClient.resumePausedMutations()}
-            >
+      <GestureHandlerRootView
+        style={styles.container}
+        className={theme.dark ? `dark` : undefined}
+      >
+        <KeyboardProvider>
+          <ThemeProvider value={theme}>
+            <BottomSheetModalProvider>
               {children}
-            </PersistQueryClientProvider>
-            <FlashMessage position="top" />
-          </BottomSheetModalProvider>
-        </ThemeProvider>
-      </KeyboardProvider>
-    </GestureHandlerRootView>
+              <FlashMessage position="top" />
+            </BottomSheetModalProvider>
+          </ThemeProvider>
+        </KeyboardProvider>
+      </GestureHandlerRootView>
+    </PersistQueryClientProvider>
   );
 }
 
