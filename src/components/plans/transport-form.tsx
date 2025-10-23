@@ -1,16 +1,17 @@
 import { Button } from '../ui';
 
 export interface TransportFormProps {
-  onSubmit: (data: any) => void;
+  onSubmit: () => void;
+  userId: string;
 }
 
-export const TransportForm = ({ onSubmit }: TransportFormProps) => {
+export const TransportForm = ({ onSubmit, userId }: TransportFormProps) => {
   return (
     <>
       <Button
         label="Add Transport"
         variant="secondary"
-        onPress={() => onSubmit({})}
+        onPress={() => onSubmit()}
       />
     </>
   );

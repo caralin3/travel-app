@@ -7,7 +7,6 @@ import {
   getDocs,
   query,
   updateDoc,
-  where,
 } from 'firebase/firestore';
 import { firebaseDB } from '../config';
 import { FIRESTORE_COLLECTIONS } from './constants';
@@ -18,6 +17,9 @@ export const addActivity = async (data: NewActivity) => {
       collection(firebaseDB, FIRESTORE_COLLECTIONS.ACTIVITIES),
       data
     );
+    await updateDoc(docRef, {
+      id: docRef.id,
+    });
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {
     console.error('Error adding document: ', e);
@@ -45,16 +47,18 @@ export const deleteActivity = async (id: string) => {
   }
 };
 
-export const getActivities = async (userId: string) => {
-  const q = query(
-    collection(firebaseDB, FIRESTORE_COLLECTIONS.ACTIVITIES),
-    where('userId', '==', userId)
-  );
-  const querySnapshot = await getDocs(q);
-  const activities: Activity[] = [];
-  querySnapshot.forEach((doc) => {
-    activities.push(Activity.parse(doc.data()));
-  });
+export const getActivities = async () => {
+  try {
+    const q = query(collection(firebaseDB, FIRESTORE_COLLECTIONS.ACTIVITIES));
+    const querySnapshot = await getDocs(q);
+    const activities: Activity[] = [];
+    querySnapshot.forEach((doc) => {
+      activities.push(Activity.parse(doc.data()));
+    });
 
-  return activities;
+    return activities;
+  } catch (e) {
+    console.error('Error fetching activities: ', e);
+    return [];
+  }
 };

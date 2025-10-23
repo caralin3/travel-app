@@ -1,7 +1,8 @@
 import { Button } from '../ui';
 
 export interface EntertainmentFormProps {
-  onSubmit: (data: any) => void;
+  onSubmit: () => void;
+  userId: string;
 }
 
 export const EntertainmentForm = ({ onSubmit }: EntertainmentFormProps) => {
@@ -10,7 +11,7 @@ export const EntertainmentForm = ({ onSubmit }: EntertainmentFormProps) => {
       <Button
         label="Add Entertainment"
         variant="secondary"
-        onPress={() => onSubmit({})}
+        onPress={() => onSubmit()}
       />
     </>
   );

@@ -1,7 +1,8 @@
 import { Button } from '../ui';
 
 export interface ActivityFormProps {
-  onSubmit: (data: any) => void;
+  onSubmit: () => void;
+  userId: string;
 }
 
 export const ActivityForm = ({ onSubmit }: ActivityFormProps) => {
@@ -10,7 +11,7 @@ export const ActivityForm = ({ onSubmit }: ActivityFormProps) => {
       <Button
         label="Add Activity"
         variant="secondary"
-        onPress={() => onSubmit({})}
+        onPress={() => onSubmit()}
       />
     </>
   );

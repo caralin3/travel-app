@@ -1,4 +1,8 @@
+import { addTrip } from '@/lib/firebase/firestore';
+import { NewTrip } from '@/lib/types/trips';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { formatISO } from 'date-fns';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button, ControlledInput } from '../ui';
@@ -15,13 +19,37 @@ const schema = z.object({
 export type FormType = z.infer<typeof schema>;
 
 export interface TripFormProps {
-  onSubmit: (data: FormType) => void;
+  onSubmit: () => void;
+  userId: string;
 }
 
-export const TripForm = ({ onSubmit }: TripFormProps) => {
+export const TripForm = ({ onSubmit, userId }: TripFormProps) => {
   const { control, handleSubmit, formState } = useForm<FormType>({
     resolver: zodResolver(schema),
   });
+
+  const mutation = useMutation({
+    mutationFn: addTrip,
+    onSuccess: () => {
+      onSubmit();
+    },
+    onError: (error) => {
+      console.error('Error adding trip:', error);
+    },
+  });
+
+  const submitForm = (data: FormType) => {
+    const tripData: NewTrip = {
+      ...data,
+      createdAt: formatISO(new Date()),
+      endDate: formatISO(new Date(data.endDate)),
+      notes: data.notes || '',
+      startDate: formatISO(new Date(data.startDate)),
+      updatedAt: formatISO(new Date()),
+      userId,
+    };
+    mutation.mutate(tripData);
+  };
 
   return (
     <>
@@ -33,6 +61,7 @@ export const TripForm = ({ onSubmit }: TripFormProps) => {
         placeholder="e.g. Summer Vacation"
         error={formState.errors.name?.message}
         required
+        autoCapitalize="words"
       />
       <ControlledInput
         testID="destination"
@@ -41,6 +70,7 @@ export const TripForm = ({ onSubmit }: TripFormProps) => {
         label="Destination"
         placeholder="e.g. Paris, France"
         error={formState.errors.destination?.message}
+        autoCapitalize="words"
       />
       <ControlledInput
         testID="startDate"
@@ -74,7 +104,7 @@ export const TripForm = ({ onSubmit }: TripFormProps) => {
         label="Add Trip"
         size="lg"
         variant="secondary"
-        onPress={handleSubmit(onSubmit)}
+        onPress={handleSubmit(submitForm)}
       />
     </>
   );

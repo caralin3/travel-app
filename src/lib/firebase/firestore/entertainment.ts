@@ -7,7 +7,6 @@ import {
   getDocs,
   query,
   updateDoc,
-  where,
 } from 'firebase/firestore';
 import { firebaseDB } from '../config';
 import { FIRESTORE_COLLECTIONS } from './constants';
@@ -18,6 +17,9 @@ export const addEntertainment = async (data: NewEntertainment) => {
       collection(firebaseDB, FIRESTORE_COLLECTIONS.ENTERTAINMENT),
       data
     );
+    await updateDoc(docRef, {
+      id: docRef.id,
+    });
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {
     console.error('Error adding document: ', e);
@@ -48,16 +50,20 @@ export const deleteEntertainment = async (id: string) => {
   }
 };
 
-export const getEntertainment = async (userId: string) => {
-  const q = query(
-    collection(firebaseDB, FIRESTORE_COLLECTIONS.ENTERTAINMENT),
-    where('userId', '==', userId)
-  );
-  const querySnapshot = await getDocs(q);
-  const entertainments: Entertainment[] = [];
-  querySnapshot.forEach((doc) => {
-    entertainments.push(Entertainment.parse(doc.data()));
-  });
+export const getEntertainment = async () => {
+  try {
+    const q = query(
+      collection(firebaseDB, FIRESTORE_COLLECTIONS.ENTERTAINMENT)
+    );
+    const querySnapshot = await getDocs(q);
+    const entertainments: Entertainment[] = [];
+    querySnapshot.forEach((doc) => {
+      entertainments.push(Entertainment.parse(doc.data()));
+    });
 
-  return entertainments;
+    return entertainments;
+  } catch (e) {
+    console.error('Error getting entertainment: ', e);
+    return [];
+  }
 };

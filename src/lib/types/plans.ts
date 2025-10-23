@@ -57,12 +57,12 @@ export const Flight = z.object({
   departure: FlightETA,
   duration: z.number().optional(),
   flightNumber: z.string(),
-  id: z.uuid(),
-  layoverFlightIds: z.array(z.uuid()).optional(),
+  id: z.string(),
+  layoverFlightIds: z.array(z.string()).optional(),
   notes: z.string().optional(),
-  tripId: z.uuid().optional(),
+  tripId: z.string().optional(),
   updatedAt: z.string(),
-  userId: z.uuid(),
+  userId: z.string(),
 });
 
 export type Flight = z.infer<typeof Flight>;
@@ -79,13 +79,13 @@ export const Lodging = z.object({
   checkOutDatetime: z.string().optional(),
   confirmationNumber: z.string().optional(),
   createdAt: z.string(),
-  id: z.uuid(),
+  id: z.string(),
   name: z.string(),
   notes: z.string().optional(),
   phoneNumber: z.string().optional(),
-  tripId: z.uuid().optional(),
+  tripId: z.string().optional(),
   updatedAt: z.string(),
-  userId: z.uuid(),
+  userId: z.string(),
 });
 
 export type Lodging = z.infer<typeof Lodging>;
@@ -101,14 +101,14 @@ export const Transport = z.object({
   createdAt: z.string(),
   departureDatetime: z.string().optional(),
   dropoffLocation: Address.optional(),
-  id: z.uuid(),
+  id: z.string(),
   name: z.string(),
   notes: z.string().optional(),
   pickupLocation: Address.optional(),
   phoneNumber: z.string().optional(),
-  tripId: z.uuid().optional(),
+  tripId: z.string().optional(),
   updatedAt: z.string(),
-  userId: z.uuid(),
+  userId: z.string(),
 });
 
 export type Transport = z.infer<typeof Transport>;
@@ -123,13 +123,13 @@ export const Food = z.object({
   address: Address.optional(),
   createdAt: z.string(),
   datetime: z.string().optional(),
-  id: z.uuid(),
+  id: z.string(),
   name: z.string(),
   notes: z.string().optional(),
   phoneNumber: z.string().optional(),
-  tripId: z.uuid().optional(),
+  tripId: z.string().optional(),
   updatedAt: z.string(),
-  userId: z.uuid(),
+  userId: z.string(),
 });
 
 export type Food = z.infer<typeof Food>;
@@ -142,13 +142,13 @@ export const Entertainment = z.object({
   address: Address.optional(),
   createdAt: z.string(),
   datetime: z.string().optional(),
-  id: z.uuid(),
+  id: z.string(),
   name: z.string(),
   notes: z.string().optional(),
   phoneNumber: z.string().optional(),
-  tripId: z.uuid().optional(),
+  tripId: z.string().optional(),
   updatedAt: z.string(),
-  userId: z.uuid(),
+  userId: z.string(),
 });
 
 export type Entertainment = z.infer<typeof Entertainment>;
@@ -163,13 +163,13 @@ export const Shopping = z.object({
   address: Address.optional(),
   createdAt: z.string(),
   datetime: z.string().optional(),
-  id: z.uuid(),
+  id: z.string(),
   name: z.string(),
   notes: z.string().optional(),
   phoneNumber: z.string().optional(),
-  tripId: z.uuid().optional(),
+  tripId: z.string().optional(),
   updatedAt: z.string(),
-  userId: z.uuid(),
+  userId: z.string(),
 });
 
 export type Shopping = z.infer<typeof Shopping>;
@@ -184,13 +184,13 @@ export const Activity = z.object({
   address: Address.optional(),
   createdAt: z.string(),
   datetime: z.string().optional(),
-  id: z.uuid(),
+  id: z.string(),
   name: z.string(),
   notes: z.string().optional(),
   phoneNumber: z.string().optional(),
-  tripId: z.uuid().optional(),
+  tripId: z.string().optional(),
   updatedAt: z.string(),
-  userId: z.uuid(),
+  userId: z.string(),
 });
 
 export type Activity = z.infer<typeof Activity>;
@@ -205,13 +205,13 @@ export const Other = z.object({
   address: Address.optional(),
   createdAt: z.string(),
   datetime: z.string().optional(),
-  id: z.uuid(),
+  id: z.string(),
   name: z.string(),
   notes: z.string().optional(),
   phoneNumber: z.string().optional(),
-  tripId: z.uuid().optional(),
+  tripId: z.string().optional(),
   updatedAt: z.string(),
-  userId: z.uuid(),
+  userId: z.string(),
 });
 
 export type Other = z.infer<typeof Other>;

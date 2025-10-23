@@ -7,7 +7,6 @@ import {
   getDocs,
   query,
   updateDoc,
-  where,
 } from 'firebase/firestore';
 import { firebaseDB } from '../config';
 import { FIRESTORE_COLLECTIONS } from './constants';
@@ -18,6 +17,9 @@ export const addFood = async (data: NewFood) => {
       collection(firebaseDB, FIRESTORE_COLLECTIONS.FOOD),
       data
     );
+    await updateDoc(docRef, {
+      id: docRef.id,
+    });
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {
     console.error('Error adding document: ', e);
@@ -45,16 +47,18 @@ export const deleteFood = async (id: string) => {
   }
 };
 
-export const getFoods = async (userId: string) => {
-  const q = query(
-    collection(firebaseDB, FIRESTORE_COLLECTIONS.FOOD),
-    where('userId', '==', userId)
-  );
-  const querySnapshot = await getDocs(q);
-  const foods: Food[] = [];
-  querySnapshot.forEach((doc) => {
-    foods.push(Food.parse(doc.data()));
-  });
+export const getFoods = async () => {
+  try {
+    const q = query(collection(firebaseDB, FIRESTORE_COLLECTIONS.FOOD));
+    const querySnapshot = await getDocs(q);
+    const foods: Food[] = [];
+    querySnapshot.forEach((doc) => {
+      foods.push(Food.parse(doc.data()));
+    });
 
-  return foods;
+    return foods;
+  } catch (e) {
+    console.error('Error fetching food items: ', e);
+    return [];
+  }
 };

@@ -7,7 +7,6 @@ import {
   getDocs,
   query,
   updateDoc,
-  where,
 } from 'firebase/firestore';
 import { firebaseDB } from '../config';
 import { FIRESTORE_COLLECTIONS } from './constants';
@@ -18,6 +17,9 @@ export const addShopping = async (data: NewShopping) => {
       collection(firebaseDB, FIRESTORE_COLLECTIONS.SHOPPING),
       data
     );
+    await updateDoc(docRef, {
+      id: docRef.id,
+    });
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {
     console.error('Error adding document: ', e);
@@ -45,16 +47,18 @@ export const deleteShopping = async (id: string) => {
   }
 };
 
-export const getShopping = async (userId: string) => {
-  const q = query(
-    collection(firebaseDB, FIRESTORE_COLLECTIONS.SHOPPING),
-    where('userId', '==', userId)
-  );
-  const querySnapshot = await getDocs(q);
-  const shoppings: Shopping[] = [];
-  querySnapshot.forEach((doc) => {
-    shoppings.push(Shopping.parse(doc.data()));
-  });
+export const getShopping = async () => {
+  try {
+    const q = query(collection(firebaseDB, FIRESTORE_COLLECTIONS.SHOPPING));
+    const querySnapshot = await getDocs(q);
+    const shoppings: Shopping[] = [];
+    querySnapshot.forEach((doc) => {
+      shoppings.push(Shopping.parse(doc.data()));
+    });
 
-  return shoppings;
+    return shoppings;
+  } catch (e) {
+    console.error('Error fetching shopping items: ', e);
+    return [];
+  }
 };

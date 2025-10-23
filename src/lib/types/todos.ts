@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const Todo = z.object({
   completed: z.boolean().default(false),
   createdAt: z.string(),
-  id: z.uuid(),
+  id: z.string(),
   text: z.string(),
   notes: z.string().optional(),
   updatedAt: z.string(),
@@ -19,12 +19,12 @@ export type NewTodo = z.infer<typeof NewTodo>;
 
 export const TodoList = z.object({
   createdAt: z.string(),
-  id: z.uuid(),
+  id: z.string(),
   title: z.string(),
   items: z.array(Todo).default([]),
-  tripId: z.uuid().optional(),
+  tripId: z.string().optional(),
   updatedAt: z.string(),
-  userId: z.uuid(),
+  userId: z.string(),
 });
 
 export type TodoList = z.infer<typeof TodoList>;

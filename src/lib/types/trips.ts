@@ -5,18 +5,16 @@ export const Trip = z.object({
   createdAt: z.string(),
   destination: z.string().optional(),
   endDate: z.string(),
-  id: z.uuid(),
+  id: z.string(),
   name: z.string(),
   notes: z.string().optional(),
   startDate: z.string(),
   updatedAt: z.string(),
-  userId: z.uuid(),
+  userId: z.string(),
 });
 
 export type Trip = z.infer<typeof Trip>;
 
-export const NewTrip = z.discriminatedUnion('type', [
-  Trip.omit({ id: true, createdAt: true, updatedAt: true, userId: true }),
-]);
+export const NewTrip = z.discriminatedUnion('type', [Trip.omit({ id: true })]);
 
 export type NewTrip = z.infer<typeof NewTrip>;

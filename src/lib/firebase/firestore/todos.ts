@@ -7,7 +7,6 @@ import {
   getDocs,
   query,
   updateDoc,
-  where,
 } from 'firebase/firestore';
 import { firebaseDB } from '../config';
 import { FIRESTORE_COLLECTIONS } from './constants';
@@ -18,6 +17,9 @@ export const addTodo = async (data: NewTodoList) => {
       collection(firebaseDB, FIRESTORE_COLLECTIONS.TODOS),
       data
     );
+    await updateDoc(docRef, {
+      id: docRef.id,
+    });
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {
     console.error('Error adding document: ', e);
@@ -45,16 +47,18 @@ export const deleteTodo = async (id: string) => {
   }
 };
 
-export const getTodos = async (userId: string) => {
-  const q = query(
-    collection(firebaseDB, FIRESTORE_COLLECTIONS.TODOS),
-    where('userId', '==', userId)
-  );
-  const querySnapshot = await getDocs(q);
-  const todos: TodoList[] = [];
-  querySnapshot.forEach((doc) => {
-    todos.push(TodoList.parse(doc.data()));
-  });
+export const getTodos = async () => {
+  try {
+    const q = query(collection(firebaseDB, FIRESTORE_COLLECTIONS.TODOS));
+    const querySnapshot = await getDocs(q);
+    const todos: TodoList[] = [];
+    querySnapshot.forEach((doc) => {
+      todos.push(TodoList.parse(doc.data()));
+    });
 
-  return todos;
+    return todos;
+  } catch (e) {
+    console.error('Error fetching todos: ', e);
+    return [];
+  }
 };

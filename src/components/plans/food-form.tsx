@@ -1,17 +1,14 @@
 import { Button } from '../ui';
 
 export interface FoodFormProps {
-  onSubmit: (data: any) => void;
+  onSubmit: () => void;
+  userId: string;
 }
 
-export const FoodForm = ({ onSubmit }: FoodFormProps) => {
+export const FoodForm = ({ onSubmit, userId }: FoodFormProps) => {
   return (
     <>
-      <Button
-        label="Add Food"
-        variant="secondary"
-        onPress={() => onSubmit({})}
-      />
+      <Button label="Add Food" variant="secondary" onPress={() => onSubmit()} />
     </>
   );
 };

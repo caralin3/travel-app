@@ -7,7 +7,6 @@ import {
   getDocs,
   query,
   updateDoc,
-  where,
 } from 'firebase/firestore';
 import { firebaseDB } from '../config';
 import { FIRESTORE_COLLECTIONS } from './constants';
@@ -18,6 +17,9 @@ export const addFlight = async (data: NewFlight) => {
       collection(firebaseDB, FIRESTORE_COLLECTIONS.FLIGHTS),
       data
     );
+    await updateDoc(docRef, {
+      id: docRef.id,
+    });
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {
     console.error('Error adding document: ', e);
@@ -45,16 +47,18 @@ export const deleteFlight = async (id: string) => {
   }
 };
 
-export const getFlights = async (userId: string) => {
-  const q = query(
-    collection(firebaseDB, FIRESTORE_COLLECTIONS.FLIGHTS),
-    where('userId', '==', userId)
-  );
-  const querySnapshot = await getDocs(q);
-  const flights: Flight[] = [];
-  querySnapshot.forEach((doc) => {
-    flights.push(Flight.parse(doc.data()));
-  });
+export const getFlights = async () => {
+  try {
+    const q = query(collection(firebaseDB, FIRESTORE_COLLECTIONS.FLIGHTS));
+    const querySnapshot = await getDocs(q);
+    const flights: Flight[] = [];
+    querySnapshot.forEach((doc) => {
+      flights.push(Flight.parse(doc.data()));
+    });
 
-  return flights;
+    return flights;
+  } catch (e) {
+    console.error('Error getting flights: ', e);
+    return [];
+  }
 };

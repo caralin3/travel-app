@@ -1,5 +1,9 @@
+import { addFlight } from '@/lib/firebase/firestore';
 import { countries, stateLabelValues, worldTimezones } from '@/lib/static-data';
+import { NewFlight } from '@/lib/types/plans';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { formatISO } from 'date-fns';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
@@ -18,18 +22,18 @@ const schema = z.object({
   arrivalAirportName: z.string().nonempty({ message: 'Required' }),
   arrivalCity: z.string().nonempty({ message: 'Required' }),
   arrivalCountry: z.string().nonempty({ message: 'Required' }),
-  arrivalDatetime: z.string().optional(),
+  arrivalDatetime: z.string().nonempty({ message: 'Required' }),
   arrivalState: z.string().optional(),
   arrivalTerminal: z.string().optional(),
-  arrivalTimezone: z.string().optional(),
+  arrivalTimezone: z.string().nonempty({ message: 'Required' }),
   departureAirportCode: z.string().nonempty({ message: 'Required' }),
   departureAirportName: z.string().nonempty({ message: 'Required' }),
   departureCity: z.string().nonempty({ message: 'Required' }),
   departureCountry: z.string().nonempty({ message: 'Required' }),
-  departureDatetime: z.string().optional(),
+  departureDatetime: z.string().nonempty({ message: 'Required' }),
   departureState: z.string().optional(),
   departureTerminal: z.string().optional(),
-  departureTimezone: z.string().optional(),
+  departureTimezone: z.string().nonempty({ message: 'Required' }),
   duration: z.number().optional(),
   flightNumber: z.string().nonempty({ message: 'Required' }),
   confirmationNumber: z.string().optional(),
@@ -40,10 +44,11 @@ const schema = z.object({
 export type FormType = z.infer<typeof schema>;
 
 export interface FlightFormProps {
-  onSubmit: (data: any) => void;
+  onSubmit: () => void;
+  userId: string;
 }
 
-export const FlightForm = ({ onSubmit }: FlightFormProps) => {
+export const FlightForm = ({ onSubmit, userId }: FlightFormProps) => {
   const { control, handleSubmit, formState, setValue, watch } =
     useForm<FormType>({
       resolver: zodResolver(schema),
@@ -114,7 +119,49 @@ export const FlightForm = ({ onSubmit }: FlightFormProps) => {
   const clearTimezone = (
     timezone: keyof Pick<FormType, 'arrivalTimezone' | 'departureTimezone'>
   ) => {
-    setValue(timezone, undefined);
+    setValue(timezone, '');
+  };
+
+  const mutation = useMutation({
+    mutationFn: addFlight,
+    onSuccess: () => {
+      onSubmit();
+    },
+    onError: (error) => {
+      console.error('Error adding flight:', error);
+    },
+  });
+
+  const submitForm = (data: FormType) => {
+    console.log('Form submitted:', data);
+    const flightData: NewFlight = {
+      ...data,
+      userId,
+      arrival: {
+        datetime: formatISO(new Date(data.arrivalDatetime)),
+        timezone: data.arrivalTimezone,
+        airportName: data.arrivalAirportName,
+        airportCode: data.arrivalAirportCode,
+        city: data.arrivalCity,
+        state: data.arrivalState,
+        country: data.arrivalCountry,
+        terminal: data.arrivalTerminal,
+      },
+      createdAt: formatISO(new Date()),
+      departure: {
+        datetime: formatISO(new Date(data.departureDatetime)),
+        timezone: data.departureTimezone,
+        airportName: data.departureAirportName,
+        airportCode: data.departureAirportCode,
+        city: data.departureCity,
+        state: data.departureState,
+        country: data.departureCountry,
+        terminal: data.departureTerminal,
+      },
+      updatedAt: formatISO(new Date()),
+    };
+
+    mutation.mutate(flightData);
   };
 
   return (
@@ -212,6 +259,7 @@ export const FlightForm = ({ onSubmit }: FlightFormProps) => {
         name="departureDatetime"
         label="Date & Time"
         placeholder="YYYY-MM-DD HH:MM"
+        required
       />
       <ControlledSelect
         testID="departureTimezone"
@@ -221,7 +269,7 @@ export const FlightForm = ({ onSubmit }: FlightFormProps) => {
         placeholder="Select timezone"
         disabled={!departureCountry}
         options={departureTimezoneOptions}
-        helpText="Select a country first"
+        helpText={!departureCountry ? 'Select a country first' : undefined}
       />
       <Separator hideTopPadding />
       <Text className="mb-2 text-lg font-bold">Arrival Details</Text>
@@ -285,6 +333,7 @@ export const FlightForm = ({ onSubmit }: FlightFormProps) => {
         name="arrivalDatetime"
         label="Date & Time"
         placeholder="YYYY-MM-DD HH:MM"
+        required
       />
       <ControlledSelect
         testID="arrivalTimezone"
@@ -294,7 +343,7 @@ export const FlightForm = ({ onSubmit }: FlightFormProps) => {
         disabled={!arrivalCountry}
         placeholder="Select timezone"
         options={arrivalTimezoneOptions}
-        helpText="Select a country first"
+        helpText={!arrivalCountry ? 'Select a country first' : undefined}
       />
       <Separator hideTopPadding />
       <ControlledInput
@@ -309,7 +358,7 @@ export const FlightForm = ({ onSubmit }: FlightFormProps) => {
         label="Add Flight"
         size="lg"
         variant="secondary"
-        onPress={handleSubmit(onSubmit)}
+        onPress={handleSubmit(submitForm)}
       />
     </>
   );

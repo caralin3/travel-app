@@ -1,3 +1,4 @@
+import { useAuth } from '@/lib/hooks/use-auth';
 import { EventTypeEnum } from '@/lib/types/plans';
 import { useState } from 'react';
 import { useModal } from '../ui';
@@ -10,7 +11,6 @@ import { EntertainmentForm } from './entertainment-form';
 import { FlightForm } from './flight-form';
 import { FoodForm } from './food-form';
 import { LodgingForm } from './lodging-form';
-import { OtherForm } from './other-form';
 import { ShoppingForm } from './shopping-form';
 import { TransportForm } from './transport-form';
 import { TripForm } from './trip-form';
@@ -20,6 +20,7 @@ interface FloatingAddPlanMenuProps {}
 export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
   const modal = useModal();
   const [currentForm, setCurrentForm] = useState<EventTypeEnum>('add-plan');
+  const userId = useAuth((state) => state.user?.id || '');
 
   const handleChoosePlan = ({ value }: { value: EventTypeEnum }) => {
     setCurrentForm(value);
@@ -50,6 +51,7 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
           onSubmit={() => {
             dismissForm();
           }}
+          userId={userId}
         />
       ),
     },
@@ -61,6 +63,7 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
           onSubmit={() => {
             dismissForm();
           }}
+          userId={userId}
         />
       ),
     },
@@ -72,6 +75,7 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
           onSubmit={() => {
             dismissForm();
           }}
+          userId={userId}
         />
       ),
     },
@@ -83,6 +87,7 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
           onSubmit={() => {
             dismissForm();
           }}
+          userId={userId}
         />
       ),
     },
@@ -94,6 +99,7 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
           onSubmit={() => {
             dismissForm();
           }}
+          userId={userId}
         />
       ),
     },
@@ -105,6 +111,7 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
           onSubmit={() => {
             dismissForm();
           }}
+          userId={userId}
         />
       ),
     },
@@ -116,6 +123,7 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
           onSubmit={() => {
             dismissForm();
           }}
+          userId={userId}
         />
       ),
     },
@@ -127,20 +135,21 @@ export const FloatingAddPlanMenu = ({}: FloatingAddPlanMenuProps) => {
           onSubmit={() => {
             dismissForm();
           }}
+          userId={userId}
         />
       ),
     },
-    other: {
-      title: 'Other',
-      headerAction: () => setCurrentForm('add-plan'),
-      component: (
-        <OtherForm
-          onSubmit={() => {
-            dismissForm();
-          }}
-        />
-      ),
-    },
+    // other: {
+    //   title: 'Other',
+    //   headerAction: () => setCurrentForm('add-plan'),
+    //   component: (
+    //     <OtherForm
+    //       onSubmit={() => {
+    //         dismissForm();
+    //       }}
+    //     />
+    //   ),
+    // },
   };
 
   return (
