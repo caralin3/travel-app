@@ -1,8 +1,11 @@
-// Import  global CSS file
 import '../../global.css';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import NetInfo from '@react-native-community/netinfo';
 import { ThemeProvider } from '@react-navigation/native';
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
+import { onlineManager, QueryClient } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { Stack, useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
@@ -13,6 +16,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { loadSelectedTheme, useAuth } from '@/lib';
 import { firebaseAuth } from '@/lib/firebase/config';
 import { onAuthStateChanged, Unsubscribe } from '@firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useThemeConfig } from '../lib/use-theme-config';
 
 export { ErrorBoundary } from 'expo-router';
@@ -46,6 +50,31 @@ export default function RootLayout() {
 function Providers({ children }: { children: React.ReactNode }) {
   const theme = useThemeConfig();
   const router = useRouter();
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        gcTime: Infinity, // Keep data in cache forever
+        // staleTime: Infinity, // Optional: if you never want to refetch data automatically
+      },
+    },
+  });
+
+  const asyncPersist = createAsyncStoragePersister({
+    storage: AsyncStorage,
+    throttleTime: 3000,
+  });
+
+  useEffect(() => {
+    return NetInfo.addEventListener((state) => {
+      const status =
+        state.isConnected != null &&
+        state.isConnected &&
+        Boolean(state.isInternetReachable);
+      console.log('Network status changed:', status ? 'online' : 'offline');
+      onlineManager.setOnline(status);
+    });
+  }, []);
 
   useEffect(() => {
     let authListener: Unsubscribe;
@@ -85,7 +114,16 @@ function Providers({ children }: { children: React.ReactNode }) {
       <KeyboardProvider>
         <ThemeProvider value={theme}>
           <BottomSheetModalProvider>
-            {children}
+            <PersistQueryClientProvider
+              client={queryClient}
+              persistOptions={{ persister: asyncPersist, maxAge: Infinity }}
+              // onSuccess will be called when the initial restore is finished
+              // resumePausedMutations will trigger any paused mutations
+              // that was initially triggered when the device was offline
+              onSuccess={() => queryClient.resumePausedMutations()}
+            >
+              {children}
+            </PersistQueryClientProvider>
             <FlashMessage position="top" />
           </BottomSheetModalProvider>
         </ThemeProvider>
