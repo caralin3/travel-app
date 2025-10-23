@@ -5,7 +5,6 @@ export const Todo = z.object({
   createdAt: z.string(),
   id: z.uuid(),
   text: z.string(),
-  listId: z.uuid(),
   notes: z.string().optional(),
   updatedAt: z.string(),
 });
@@ -22,6 +21,7 @@ export const TodoList = z.object({
   createdAt: z.string(),
   id: z.uuid(),
   title: z.string(),
+  items: z.array(Todo).default([]),
   tripId: z.uuid().optional(),
   updatedAt: z.string(),
   userId: z.uuid(),

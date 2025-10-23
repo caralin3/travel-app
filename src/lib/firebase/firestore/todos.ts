@@ -1,4 +1,4 @@
-import { NewTodo, Todo } from '@/lib/types/todos';
+import { NewTodoList, TodoList } from '@/lib/types/todos';
 import {
   addDoc,
   collection,
@@ -12,7 +12,7 @@ import {
 import { firebaseDB } from '../config';
 import { FIRESTORE_COLLECTIONS } from './constants';
 
-export const addTodo = async (data: NewTodo) => {
+export const addTodo = async (data: NewTodoList) => {
   try {
     const docRef = await addDoc(
       collection(firebaseDB, FIRESTORE_COLLECTIONS.TODOS),
@@ -24,7 +24,7 @@ export const addTodo = async (data: NewTodo) => {
   }
 };
 
-export const updateTodo = async (data: Partial<Todo>, id: number) => {
+export const updateTodo = async (data: Partial<TodoList>, id: number) => {
   try {
     await updateDoc(
       doc(firebaseDB, FIRESTORE_COLLECTIONS.TODOS, id.toString()),
@@ -51,9 +51,9 @@ export const getTodos = async (userId: string) => {
     where('userId', '==', userId)
   );
   const querySnapshot = await getDocs(q);
-  const todos: Todo[] = [];
+  const todos: TodoList[] = [];
   querySnapshot.forEach((doc) => {
-    todos.push(Todo.parse(doc.data()));
+    todos.push(TodoList.parse(doc.data()));
   });
 
   return todos;
