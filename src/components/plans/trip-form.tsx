@@ -1,7 +1,7 @@
 import { addTrip } from '@/lib/firebase/firestore';
 import { NewTrip } from '@/lib/types/trips';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatISO } from 'date-fns';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -27,11 +27,13 @@ export const TripForm = ({ onSubmit, userId }: TripFormProps) => {
   const { control, handleSubmit, formState } = useForm<FormType>({
     resolver: zodResolver(schema),
   });
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: addTrip,
     onSuccess: () => {
       onSubmit();
+      queryClient.invalidateQueries({ queryKey: ['trips'] });
     },
     onError: (error) => {
       console.error('Error adding trip:', error);
@@ -40,11 +42,12 @@ export const TripForm = ({ onSubmit, userId }: TripFormProps) => {
 
   const submitForm = (data: FormType) => {
     const tripData: NewTrip = {
-      ...data,
       createdAt: formatISO(new Date()),
-      endDate: formatISO(new Date(data.endDate)),
+      destination: data.destination || '',
+      endDate: data.endDate,
+      name: data.name,
       notes: data.notes || '',
-      startDate: formatISO(new Date(data.startDate)),
+      startDate: data.startDate,
       updatedAt: formatISO(new Date()),
       userId,
     };
